@@ -14,6 +14,8 @@ export interface Database {
           id: string
           email: string
           role: 'coach' | 'client'
+          full_name: string | null
+          phone: string | null
           created_at: string
           updated_at: string
         }
@@ -21,6 +23,8 @@ export interface Database {
           id?: string
           email: string
           role: 'coach' | 'client'
+          full_name?: string | null
+          phone?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -28,11 +32,73 @@ export interface Database {
           id?: string
           email?: string
           role?: 'coach' | 'client'
+          full_name?: string | null
+          phone?: string | null
           created_at?: string
           updated_at?: string
         }
       }
-      // Add other tables as needed
+      coach_availability: {
+        Row: {
+          id: string
+          coach_id: string
+          day_of_week: number
+          start_time: string
+          end_time: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          coach_id: string
+          day_of_week: number
+          start_time: string
+          end_time: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          coach_id?: string
+          day_of_week?: number
+          start_time?: string
+          end_time?: string
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      sessions: {
+        Row: {
+          id: string
+          coach_id: string
+          client_id: string
+          start_time: string
+          end_time: string
+          status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          coach_id: string
+          client_id: string
+          start_time: string
+          end_time: string
+          status: 'pending' | 'confirmed' | 'completed' | 'cancelled'
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          coach_id?: string
+          client_id?: string
+          start_time?: string
+          end_time?: string
+          status?: 'pending' | 'confirmed' | 'completed' | 'cancelled'
+          created_at?: string
+          updated_at?: string
+        }
+      }
     }
   }
 } 

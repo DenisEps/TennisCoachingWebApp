@@ -2,11 +2,14 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { BookingManager } from '@/components/booking/BookingManager';
+import { SessionManager } from '@/components/sessions/SessionManager';
 
 export default function ClientDashboard() {
   const { user, session, signOut } = useAuth();
   const router = useRouter();
+  const [showBooking, setShowBooking] = useState(false);
 
   useEffect(() => {
     if (!session || user?.role !== 'client') {
@@ -32,21 +35,29 @@ export default function ClientDashboard() {
       <div className="grid gap-6 md:grid-cols-2">
         {/* Book Session Section */}
         <div className="rounded-lg bg-white p-6 shadow-lg">
-          <h2 className="mb-4 text-xl font-semibold">Book a Session</h2>
-          <div className="space-y-4">
-            <p className="text-gray-600">Find available time slots with coaches</p>
-            <button className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
-              Book Now
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Book a Session</h2>
+            <button
+              onClick={() => setShowBooking(!showBooking)}
+              className="text-sm text-blue-600 hover:text-blue-800"
+            >
+              {showBooking ? 'Hide Booking' : 'Book Now'}
             </button>
           </div>
+          
+          {showBooking ? (
+            <BookingManager />
+          ) : (
+            <p className="text-gray-600">
+              Click 'Book Now' to find available time slots with coaches
+            </p>
+          )}
         </div>
 
         {/* Upcoming Sessions Section */}
         <div className="rounded-lg bg-white p-6 shadow-lg">
           <h2 className="mb-4 text-xl font-semibold">Your Sessions</h2>
-          <div className="space-y-4">
-            <p className="text-gray-600">No upcoming sessions</p>
-          </div>
+          <SessionManager role="client" />
         </div>
       </div>
     </div>

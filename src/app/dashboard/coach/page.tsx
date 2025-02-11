@@ -4,6 +4,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AvailabilityManager } from '@/components/availability/AvailabilityManager';
+import { SessionManager } from '@/components/sessions/SessionManager';
 
 export default function CoachDashboard() {
   const { user, session, signOut, isLoading } = useAuth();
@@ -87,10 +88,8 @@ export default function CoachDashboard() {
 
         {/* Upcoming Sessions Section */}
         <div className="rounded-lg bg-white p-6 shadow-lg">
-          <h2 className="mb-4 text-xl font-semibold">Upcoming Sessions</h2>
-          <div className="space-y-4">
-            <p className="text-gray-600">No upcoming sessions</p>
-          </div>
+          <h2 className="mb-4 text-xl font-semibold">Sessions</h2>
+          <SessionManager role="coach" />
         </div>
       </div>
     </div>
