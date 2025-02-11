@@ -3,6 +3,8 @@
 import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Logo } from '@/components/ui/Logo';
+import { theme } from '@/config/theme';
 
 export default function LoginPage() {
   const { signIn } = useAuth();
@@ -26,11 +28,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold">Welcome</h1>
-          <p className="mt-2 text-gray-600">Choose your role to continue</p>
+    <div className="min-h-screen flex items-center justify-center bg-[#004D40] py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white rounded-lg shadow-xl p-8">
+        <div className="flex flex-col items-center">
+          <Logo size="large" className="mb-6" />
+          <h2 className="mt-2 text-center text-3xl font-extrabold text-gray-900">
+            Sign in to TopTennis
+          </h2>
           {error && (
             <p className="mt-2 text-red-600">{error}</p>
           )}
@@ -40,7 +44,7 @@ export default function LoginPage() {
           <button
             onClick={() => handleLogin('coach')}
             disabled={isLoading}
-            className="w-full rounded-lg bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-brand-primary px-4 py-3 text-white hover:bg-brand-primary-dark disabled:opacity-50"
           >
             {isLoading ? 'Loading...' : 'Login as Coach'}
           </button>
@@ -48,7 +52,7 @@ export default function LoginPage() {
           <button
             onClick={() => handleLogin('client')}
             disabled={isLoading}
-            className="w-full rounded-lg bg-green-600 px-4 py-3 text-white hover:bg-green-700 disabled:opacity-50"
+            className="w-full rounded-lg bg-brand-secondary px-4 py-3 text-brand-primary hover:bg-brand-secondary-dark disabled:opacity-50"
           >
             {isLoading ? 'Loading...' : 'Login as Client'}
           </button>

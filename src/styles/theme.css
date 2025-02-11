@@ -1,0 +1,11 @@
+:root {
+  --brand-primary: #004D40;
+  --brand-primary-light: #00695C;
+  --brand-primary-dark: #003D33;
+  --brand-secondary: #D4B982;
+  --brand-secondary-light: #E5D4AD;
+  --brand-secondary-dark: #B69B62;
+  
+  --color-active: var(--brand-primary);
+  --color-hover: var(--brand-primary-light);
+} 

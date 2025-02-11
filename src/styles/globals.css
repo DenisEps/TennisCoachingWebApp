@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+ 
+    /* Replace blue with our brand green */
+    --primary: 174 100% 15%; /* Our dark green */
+    --primary-foreground: 0 0% 98%;
+ 
+    --secondary: 43 47% 67%; /* #D4B982 in HSL */
+    --secondary-foreground: 174 100% 15%;
+ 
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+ 
+    --accent: 174 100% 15%;
+    --accent-foreground: 0 0% 98%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 174 100% 15%;
+ 
+    --radius: 0.5rem;
+  }
+}
+
+/* Keep only essential overrides */
+*:focus-visible {
+  outline-color: var(--brand-primary);
+}
+
+::selection {
+  background-color: var(--brand-primary);
+  color: white;
+} 

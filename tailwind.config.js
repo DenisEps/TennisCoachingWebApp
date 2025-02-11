@@ -1,3 +1,5 @@
+const { fontFamily } = require("tailwindcss/defaultTheme")
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: ["class"],
@@ -56,13 +58,29 @@ module.exports = {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
-  			}
+  			},
+  			brand: {
+  				primary: {
+  					DEFAULT: '#004D40',
+  					light: '#00695C',
+  					dark: '#003D33',
+  				},
+  				secondary: {
+  					DEFAULT: '#D4B982',
+  					light: '#E5D4AD',
+  					dark: '#B69B62',
+  				},
+  			},
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+  		backgroundColor: {
+  		},
+  		textColor: {
+  		},
   	}
   },
   plugins: [require("tailwindcss-animate")],

@@ -89,8 +89,8 @@ export function MobileNav() {
               href={item.href}
               className={`flex flex-col items-center space-y-1 transition-all duration-200 ease-in-out ${
                 isActive 
-                  ? 'text-blue-600 scale-110' 
-                  : 'text-gray-600 hover:text-blue-600 hover:scale-105'
+                  ? 'text-[#D4B982] scale-110' 
+                  : 'text-gray-600 hover:text-[#D4B982] hover:scale-105'
               }`}
             >
               <Icon className={`h-6 w-6 transition-transform duration-200 ${

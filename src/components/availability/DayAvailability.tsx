@@ -54,7 +54,7 @@ export function DayAvailability({
         <h3 className="font-medium text-gray-900">{dayName}</h3>
         <button
           onClick={() => setIsAdding(true)}
-          className="text-sm text-blue-600 hover:text-blue-700"
+          className="text-sm text-brand-primary hover:text-brand-primary-dark"
         >
           Add Time Slot
         </button>
@@ -82,9 +82,9 @@ export function DayAvailability({
               <button
                 onClick={handleAddSlot}
                 disabled={isLoading}
-                className="rounded-md bg-blue-600 px-2 py-1 text-sm text-white hover:bg-blue-700 disabled:opacity-50"
+                className="rounded-md bg-brand-primary px-3 py-2 text-sm text-white hover:bg-brand-primary-dark disabled:opacity-50"
               >
-                {isLoading ? <LoadingSpinner size="small" /> : 'Add'}
+                {isLoading ? <LoadingSpinner size="small" /> : 'Save'}
               </button>
               <button
                 onClick={() => setIsAdding(false)}

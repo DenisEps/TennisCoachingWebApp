@@ -22,19 +22,27 @@ export function AsyncWrapper({
   emptyMessage = 'No data available',
   showContentWhileLoading = false
 }: AsyncWrapperProps) {
-  if (error) {
+  if (isLoading) {
     return (
-      <ErrorMessage 
-        message={error}
-        action={onRetry ? { label: 'Retry', onClick: onRetry } : undefined}
-      />
+      <div className="flex justify-center p-8 text-brand-primary">
+        <LoadingSpinner />
+        {loadingMessage && <p className="ml-2">{loadingMessage}</p>}
+      </div>
     );
   }
 
-  if (isEmpty && !isLoading) {
+  if (error) {
     return (
-      <div className="flex min-h-[200px] items-center justify-center">
-        <p className="text-sm text-gray-500">{emptyMessage}</p>
+      <div className="rounded-lg border border-red-200 bg-red-50 p-4">
+        <p className="text-red-600">{error}</p>
+      </div>
+    );
+  }
+
+  if (isEmpty) {
+    return (
+      <div className="rounded-lg border border-brand-primary/20 bg-brand-primary/5 p-8 text-center">
+        <p className="text-brand-primary">{emptyMessage}</p>
       </div>
     );
   }

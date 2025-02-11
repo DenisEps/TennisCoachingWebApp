@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabase/config';
+import { supabase, supabaseAdmin } from '@/lib/supabase/config';
 
 interface AuthContextType {
   user: User | null;
@@ -10,6 +10,7 @@ interface AuthContextType {
   signIn: (role: 'coach' | 'client') => Promise<void>;
   signOut: () => Promise<void>;
   isLoading: boolean;
+  refreshUserData: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -61,59 +62,73 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load session from localStorage on mount
-  useEffect(() => {
-    const storedSession = localStorage.getItem('mockSession');
-    const storedUser = localStorage.getItem('mockUser');
-    
-    if (storedSession && storedUser) {
-      setSession(JSON.parse(storedSession));
-      setUser(JSON.parse(storedUser));
-    }
-    
-    setIsLoading(false);
-  }, []);
-
   const signIn = async (role: 'coach' | 'client') => {
     try {
-      const { mockUser, mockSession } = createMockData(role);
-
-      // Store in localStorage
-      localStorage.setItem('mockSession', JSON.stringify(mockSession));
-      localStorage.setItem('mockUser', JSON.stringify(mockUser));
-
-      // Update state
-      setUser(mockUser);
-      setSession(mockSession);
-
-      return;
-
-      // The following code will be uncommented when we fix the Supabase auth
-      /*
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: `demo${role}@example.com`,
-        password: 'demo123',
-      });
+      // Get the user data from the database
+      const { data: userData, error } = await supabaseAdmin
+        .from('users')
+        .select('*')
+        .eq('email', `demo${role}@example.com`)
+        .single();
 
       if (error) throw error;
 
-      if (data.user) {
-        const { error: profileError } = await supabase
-          .from('users')
-          .upsert({
-            id: data.user.id,
-            email: data.user.email,
-            role: role,
-          });
+      // Create mock session
+      const mockSession = {
+        user: userData,
+        access_token: 'mock_token'
+      };
 
-        if (profileError) throw profileError;
-      }
-      */
+      // Store in localStorage
+      localStorage.setItem('mockSession', JSON.stringify(mockSession));
+      localStorage.setItem('mockUser', JSON.stringify(userData));
+
+      // Update state
+      setUser(userData);
+      setSession(mockSession as unknown as Session);
     } catch (error) {
-      console.error('Sign in error:', error);
+      console.error('Error signing in:', error);
       throw error;
     }
   };
+
+  // Add a function to refresh user data
+  const refreshUserData = async () => {
+    if (!user?.id) return;
+
+    try {
+      const { data, error } = await supabaseAdmin
+        .from('users')
+        .select('*')
+        .eq('id', user.id)
+        .single();
+
+      if (error) throw error;
+      if (data) {
+        setUser(data);
+        // Update localStorage as well
+        localStorage.setItem('mockUser', JSON.stringify(data));
+      }
+    } catch (error) {
+      console.error('Error refreshing user data:', error);
+    }
+  };
+
+  // Add useEffect to load user data from localStorage on mount
+  useEffect(() => {
+    const loadUserFromStorage = () => {
+      const storedUser = localStorage.getItem('mockUser');
+      const storedSession = localStorage.getItem('mockSession');
+
+      if (storedUser && storedSession) {
+        setUser(JSON.parse(storedUser));
+        setSession(JSON.parse(storedSession));
+      }
+      setIsLoading(false);
+    };
+
+    loadUserFromStorage();
+  }, []);
 
   const signOut = async () => {
     // Clear localStorage
@@ -132,7 +147,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, signIn, signOut, isLoading }}>
+    <AuthContext.Provider 
+      value={{ 
+        user, 
+        session, 
+        signIn, 
+        signOut, 
+        isLoading,
+        refreshUserData
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

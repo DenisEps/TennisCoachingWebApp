@@ -82,7 +82,7 @@ export default function CoachDashboard() {
               </h2>
               <button
                 onClick={handleManageSchedule}
-                className="rounded-md bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100"
+                className="rounded-md bg-brand-primary/10 px-3 py-2 text-sm font-medium text-brand-primary hover:bg-brand-primary/20"
               >
                 {showAvailability ? 'Hide Schedule' : 'Manage Schedule'}
               </button>

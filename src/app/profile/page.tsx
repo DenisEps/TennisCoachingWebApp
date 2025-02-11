@@ -4,14 +4,16 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useState, useEffect } from 'react';
 import { supabaseAdmin } from '@/lib/supabase/config';
 import { useRouter } from 'next/navigation';
+import { UserCircle } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user, signOut } = useAuth();
+  const { user, signOut, refreshUserData } = useAuth();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [fullName, setFullName] = useState('');
+  const [fullName, setFullName] = useState(user?.full_name || '');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Update both fullName and email when user data changes
   useEffect(() => {
@@ -23,6 +25,9 @@ export default function ProfilePage() {
 
   const handleUpdateProfile = async () => {
     try {
+      setIsLoading(true);
+      setMessage(null);
+
       const { error } = await supabaseAdmin
         .from('users')
         .update({ full_name: fullName })
@@ -30,10 +35,16 @@ export default function ProfilePage() {
 
       if (error) throw error;
 
+      // Refresh user data in context
+      await refreshUserData();
+
       setMessage({ type: 'success', text: 'Profile updated successfully' });
       setIsEditing(false);
-    } catch (error) {
+    } catch (err) {
+      console.error('Error updating profile:', err);
       setMessage({ type: 'error', text: 'Failed to update profile' });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -48,102 +59,95 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="mx-auto max-w-md space-y-6">
-        <h1 className="text-2xl font-bold">Profile</h1>
+    <div className="container mx-auto p-4 space-y-6">
+      <h1 className="text-2xl font-bold">Profile</h1>
 
-        {message && (
-          <div className={`rounded-md p-4 ${
-            message.type === 'success' 
-              ? 'bg-green-50 text-green-700' 
-              : 'bg-red-50 text-red-700'
-          }`}>
-            <p className="text-sm">{message.text}</p>
+      {message && (
+        <div className={`rounded-md p-4 ${
+          message.type === 'success' 
+            ? 'bg-green-50 text-green-700' 
+            : 'bg-red-50 text-red-700'
+        }`}>
+          <p className="text-sm">{message.text}</p>
+        </div>
+      )}
+
+      {/* Profile Info */}
+      <div className="rounded-lg border bg-white p-6 shadow-sm">
+        {/* Avatar Section */}
+        <div className="mb-6 flex justify-center">
+          <UserCircle className="h-24 w-24 text-gray-400" />
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <h2 className="text-sm font-medium text-gray-500">Email</h2>
+            <p className="mt-1">{email}</p>
           </div>
-        )}
-
-        <div className="rounded-lg border bg-white p-6 shadow-sm">
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                type="email"
-                value={email}
-                disabled
-                className="mt-1 block w-full rounded-md border-gray-300 bg-gray-50 px-3 py-2"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              {isEditing ? (
+          
+          <div>
+            <h2 className="text-sm font-medium text-gray-500">Full Name</h2>
+            {isEditing ? (
+              <div className="mt-1 space-y-2">
                 <input
                   type="text"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  className="mt-1 block w-full rounded-md border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-blue-500"
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-primary focus:outline-none focus:ring-1 focus:ring-brand-primary"
+                  placeholder="Enter your full name"
                 />
-              ) : (
-                <div className="mt-1 flex items-center justify-between">
-                  <span className="block rounded-md bg-gray-50 px-3 py-2">
-                    {user?.full_name || 'Not set'}
-                  </span>
+                <div className="flex gap-2">
                   <button
-                    onClick={() => setIsEditing(true)}
-                    className="text-sm text-blue-600 hover:text-blue-700"
+                    onClick={handleUpdateProfile}
+                    disabled={isLoading}
+                    className="rounded-md bg-brand-primary px-3 py-2 text-sm text-white hover:bg-brand-primary-dark disabled:opacity-50"
                   >
-                    Edit
+                    {isLoading ? 'Saving...' : 'Save'}
+                  </button>
+                  <button
+                    onClick={() => setIsEditing(false)}
+                    disabled={isLoading}
+                    className="rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+                  >
+                    Cancel
                   </button>
                 </div>
-              )}
-            </div>
-
-            {isEditing && (
-              <button
-                onClick={handleUpdateProfile}
-                className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-              >
-                Save Changes
-              </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <p className="mt-1">{fullName || 'Not set'}</p>
+                <button 
+                  onClick={() => setIsEditing(true)}
+                  className="text-brand-primary hover:text-brand-primary-dark"
+                >
+                  Edit
+                </button>
+              </div>
             )}
           </div>
         </div>
-
-        {/* Help & Support Card */}
-        <div className="rounded-lg border bg-white p-6 shadow-sm">
-          <h2 className="mb-4 text-lg font-medium">Help & Support</h2>
-          <div className="space-y-4">
-            <p className="text-sm text-gray-600">
-              Need help? Contact our support team or check our documentation.
-            </p>
-            <div className="flex gap-3">
-              <a
-                href="mailto:support@tennis-coaching.com"
-                className="inline-flex items-center rounded-md bg-blue-50 px-3 py-2 text-sm font-medium text-blue-700 hover:bg-blue-100"
-              >
-                Contact Support
-              </a>
-              <a
-                href="/docs"
-                className="inline-flex items-center rounded-md bg-gray-50 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
-              >
-                Documentation
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <button
-          onClick={handleSignOut}
-          className="w-full rounded-md bg-red-600 px-4 py-2 text-white hover:bg-red-700"
-        >
-          Sign Out
-        </button>
       </div>
+
+      {/* Help & Support */}
+      <div className="rounded-lg border bg-white p-6 shadow-sm">
+        <h2 className="text-xl font-semibold">Help & Support</h2>
+        <p className="mt-2 text-gray-600">
+          Having trouble? Our support team is here to help you.
+        </p>
+        <div className="mt-4 space-x-4">
+          <button className="text-brand-primary hover:text-brand-primary-dark">
+            Contact Support
+          </button>
+        </div>
+      </div>
+
+      {/* Sign Out Button */}
+      <button 
+        onClick={handleSignOut}
+        className="w-full rounded-lg bg-brand-primary px-4 py-3 text-white hover:bg-brand-primary-dark"
+      >
+        Sign Out
+      </button>
     </div>
   );
 } 

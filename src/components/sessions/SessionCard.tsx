@@ -65,9 +65,13 @@ export function SessionCard({
   const { date, time } = formatDateTime(session.start_time);
 
   return (
-    <div className={`rounded-lg border border-gray-200 p-4 ${
-      isPast ? 'bg-gray-50' : 'bg-white shadow-sm'
-    }`}>
+    <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:border-brand-primary/50">
+      <div className="flex justify-between">
+        <h3 className="font-medium text-brand-primary">
+          {role === 'coach' ? 'Session with Client' : 'Session with Coach'}
+        </h3>
+        <span className="text-sm text-brand-secondary">{date}</span>
+      </div>
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <p className="text-sm font-medium text-gray-900">
