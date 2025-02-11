@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabaseAdmin } from '@/lib/supabase/config';
 import { useAuth } from '@/contexts/AuthContext';
+import { AsyncWrapper } from '@/components/ui/AsyncWrapper';
 
 interface Session {
   id: string;
@@ -100,31 +101,73 @@ export function SessionManager({ role }: { role: 'coach' | 'client' }) {
   const pastSessions = sessions.filter(s => !isUpcoming(s) || s.status === 'cancelled');
 
   return (
-    <div className="space-y-6">
-      {message && (
-        <div className={`p-3 rounded ${
-          message.type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-        }`}>
-          {message.text}
-        </div>
-      )}
+    <AsyncWrapper
+      isLoading={isLoading}
+      error={message?.type === 'error' ? message.text : null}
+      onRetry={loadSessions}
+    >
+      <div className="space-y-6">
+        {message?.type === 'success' && (
+          <div className="rounded bg-green-100 p-3 text-green-700">
+            {message.text}
+          </div>
+        )}
 
-      {/* Upcoming Sessions */}
-      <div>
-        <h3 className="font-medium text-lg mb-4">Upcoming Sessions</h3>
-        {upcomingSessions.length === 0 ? (
-          <p className="text-gray-500">No upcoming sessions</p>
-        ) : (
-          <div className="space-y-4">
-            {upcomingSessions.map((session) => (
-              <div
-                key={session.id}
-                className="border rounded-lg p-4 space-y-2"
-              >
-                <div className="flex justify-between items-start">
+        {/* Upcoming Sessions */}
+        <div>
+          <h3 className="font-medium text-lg mb-4">Upcoming Sessions</h3>
+          {upcomingSessions.length === 0 ? (
+            <p className="text-gray-500">No upcoming sessions</p>
+          ) : (
+            <div className="space-y-4">
+              {upcomingSessions.map((session) => (
+                <div
+                  key={session.id}
+                  className="border rounded-lg p-4 space-y-2"
+                >
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-medium">
+                        {role === 'coach' 
+                          ? `Client: ${session.client?.full_name || session.client?.email}`
+                          : `Coach: ${session.coach?.full_name || session.coach?.email}`
+                        }
+                      </p>
+                      <p className="text-gray-600">
+                        {formatDateTime(session.start_time)} - {new Date(session.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
+                      </p>
+                      <p className="text-sm text-gray-500">Status: {session.status}</p>
+                    </div>
+                    {session.status === 'pending' && (
+                      <button
+                        onClick={() => handleCancelSession(session.id)}
+                        className="text-red-600 hover:text-red-800"
+                      >
+                        Cancel
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Past Sessions */}
+        <div>
+          <h3 className="font-medium text-lg mb-4">Past Sessions</h3>
+          {pastSessions.length === 0 ? (
+            <p className="text-gray-500">No past sessions</p>
+          ) : (
+            <div className="space-y-4">
+              {pastSessions.map((session) => (
+                <div
+                  key={session.id}
+                  className="border rounded-lg p-4 space-y-2 bg-gray-50"
+                >
                   <div>
                     <p className="font-medium">
-                      {role === 'coach' 
+                      {role === 'coach'
                         ? `Client: ${session.client?.full_name || session.client?.email}`
                         : `Coach: ${session.coach?.full_name || session.coach?.email}`
                       }
@@ -134,50 +177,12 @@ export function SessionManager({ role }: { role: 'coach' | 'client' }) {
                     </p>
                     <p className="text-sm text-gray-500">Status: {session.status}</p>
                   </div>
-                  {session.status === 'pending' && (
-                    <button
-                      onClick={() => handleCancelSession(session.id)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      Cancel
-                    </button>
-                  )}
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-
-      {/* Past Sessions */}
-      <div>
-        <h3 className="font-medium text-lg mb-4">Past Sessions</h3>
-        {pastSessions.length === 0 ? (
-          <p className="text-gray-500">No past sessions</p>
-        ) : (
-          <div className="space-y-4">
-            {pastSessions.map((session) => (
-              <div
-                key={session.id}
-                className="border rounded-lg p-4 space-y-2 bg-gray-50"
-              >
-                <div>
-                  <p className="font-medium">
-                    {role === 'coach'
-                      ? `Client: ${session.client?.full_name || session.client?.email}`
-                      : `Coach: ${session.coach?.full_name || session.coach?.email}`
-                    }
-                  </p>
-                  <p className="text-gray-600">
-                    {formatDateTime(session.start_time)} - {new Date(session.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                  </p>
-                  <p className="text-sm text-gray-500">Status: {session.status}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    </AsyncWrapper>
   );
 } 

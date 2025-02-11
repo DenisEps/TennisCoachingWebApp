@@ -43,13 +43,13 @@ This project is a **mobile-friendly, mobile-first tennis coaching web applicatio
 
 - **Supabase**  
   - **Authentication:** Supabase Auth for email sign-up/login.  
-  - **Database:** Supabase’s PostgreSQL for relational data.  
+  - **Database:** Supabase's PostgreSQL for relational data.  
   - **Storage:** For any future file uploads (client/coach profile pictures, etc.).
 
 ### Other Libraries/Services
 
 - **Email Notifications:**  
-  - Leverage Supabase’s serverless functions (Edge Functions) for MVP. For future enhancements, external email services such as [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), or [Postmark](https://postmarkapp.com/) may be considered.
+  - Leverage Supabase's serverless functions (Edge Functions) for MVP. For future enhancements, external email services such as [SendGrid](https://sendgrid.com/), [Mailgun](https://www.mailgun.com/), or [Postmark](https://postmarkapp.com/) may be considered.
 
 - **Deployment:**  
   - The frontend can be deployed on [Vercel](https://vercel.com/) for MVP. Other options like [Netlify](https://www.netlify.com/) can be explored for future scope enhancements.  
@@ -57,34 +57,34 @@ This project is a **mobile-friendly, mobile-first tennis coaching web applicatio
 
 ## 3. MVP Features
 
-1. **User Authentication**  
-   - Email sign-up via Supabase.  
-   - No full login flow is required for the MVP; instead, provide buttons to login as Coach or Client.  
-   - Basic role-based access control (Coach, Client).
+1. **User Authentication** ✅  
+   - Email sign-up via Supabase
+   - Simplified login flow with Coach/Client buttons
+   - Basic role-based access control
 
-2. **Coach & Scheduling System**  
-   - Coaches set their availability (days/hours).  
-   - Clients can view available coaches and time slots.
+2. **Coach & Scheduling System** ✅  
+   - Coaches set their availability (days/hours)
+   - Clients can view available coaches and time slots
 
-3. **Session Management**  
-   - Clients can book and cancel sessions.  
-   - Coaches receive notifications on booking/cancellation.
+3. **Session Management** ✅  
+   - Clients can book and cancel sessions
+   - Coaches can view and manage sessions
 
-4. **Offline Payment Handling**  
-   - Cash payments are made directly to the coach.  
-   - A single uniform pricing model is used for simplicity.
+4. **Offline Payment Handling** ✅  
+   - Cash payments are made directly to the coach
+   - A single uniform pricing model is used for simplicity
 
 5. **Notifications**  
-   - Email alerts for both coach and client upon booking or cancellation.  
-   - Basic reminders for upcoming sessions.
+   - [POSTPONED for Post-MVP] Email alerts for booking/cancellation
+   - Will be implemented after core functionality is stable
 
-6. **Client Profiles & Session History**  
-   - Basic client information: name, email, and phone.  
-   - Track session history (completed and upcoming).
+6. **Client Profiles & Session History** ✅  
+   - Basic client information
+   - Track session history (completed and upcoming)
 
-7. **Coach Dashboard**  
-   - Overview of upcoming sessions.  
-   - Functionality to set or adjust availability.
+7. **Coach Dashboard** ✅  
+   - Overview of upcoming sessions
+   - Functionality to set or adjust availability
 
 8. **News Feed**  
    - A placeholder page for coaches to post news, announcements, etc.
@@ -134,7 +134,7 @@ This project is a **mobile-friendly, mobile-first tennis coaching web applicatio
 ### 5.3 Coach Flow
 
 1. **Coach Dashboard**  
-   - Displays today’s sessions, upcoming sessions, session history, and profile settings.
+   - Displays today's sessions, upcoming sessions, session history, and profile settings.
 
 2. **Availability Management**  
    - Set working hours (e.g., 8AM-5PM).  
@@ -166,7 +166,7 @@ The detailed SQL schema for the project is maintained separately in the file:
 ## 7. Further Considerations
 
 - **Security:**  
-  Ensure session details and user data are protected by using Supabase’s row-level security (RLS) rules for data isolation.
+  Ensure session details and user data are protected by using Supabase's row-level security (RLS) rules for data isolation.
 - **Performance:**  
   Optimize for mobile data usage and implement caching strategies as needed (e.g., using SWR in React).
 - **Scalability:**  
@@ -182,7 +182,7 @@ The detailed SQL schema for the project is maintained separately in the file:
 - **Supabase Row-Level Security (RLS):**  
   Configure RLS rules so that coaches can only access their own data and clients can only access their own bookings.
 - **Sensitive Data:**  
-  Store API keys and service credentials securely in environment variables or through Supabase’s configuration.
+  Store API keys and service credentials securely in environment variables or through Supabase's configuration.
 - **Database Indexing:**  
   Ensure frequently queried fields (e.g., `start_time` in sessions) are properly indexed.
 - **Stateless Architecture:**  

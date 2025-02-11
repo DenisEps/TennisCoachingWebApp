@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AvailabilityManager } from '@/components/availability/AvailabilityManager';
 import { SessionManager } from '@/components/sessions/SessionManager';
+import Link from 'next/link';
 
 export default function CoachDashboard() {
   const { user, session, signOut, isLoading } = useAuth();
@@ -53,12 +54,20 @@ export default function CoachDashboard() {
           <h1 className="text-2xl font-bold">Coach Dashboard</h1>
           <p className="text-gray-600">Welcome back, {user.email}</p>
         </div>
-        <button
-          onClick={() => signOut()}
-          className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-        >
-          Sign Out
-        </button>
+        <div className="flex items-center space-x-4">
+          <Link
+            href="/support"
+            className="text-blue-600 hover:text-blue-800"
+          >
+            Help & Support
+          </Link>
+          <button
+            onClick={() => signOut()}
+            className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+          >
+            Sign Out
+          </button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">

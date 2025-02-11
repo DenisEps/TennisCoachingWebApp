@@ -40,19 +40,19 @@ This document outlines the step-by-step development plan for the MVP version of 
   - Store session status, start/end times, and the offline payment flag.
 
 ## 6. Email Notifications & Reminders
-- **Notification Setup:**  
-  - Configure email notifications for booking and cancellation events using Supabase Edge Functions or a placeholder integration.
+- **[POSTPONED for Post-MVP]** Email notifications setup will be implemented after MVP launch
+- Focus on core functionality first
 
 ## 7. Frontend Development for User Flows
 - **Design & Build Screens:**  
-  - **Landing/Welcome Screen:** Options for login as Coach or Client.
-  - **Sign-Up & Login Screens:** Basic forms with non-functional elements (e.g., "Forgot password" placeholder).
-  - **Client Dashboard:** Display upcoming sessions, session history, and profile settings.
-  - **Coach Dashboard:** Display today's sessions, upcoming sessions, availability settings, and profile settings.
-  - **Booking & Session Details Pages:** Interfaces for booking, cancellation, and session overview.
-  - **News Feed Page:** A placeholder for coaches to post news and announcements. A view-only page for clients. Same page for both coaches and clients. Coaches can post news and announcements. Clients can view news and announcements.
+  - **Landing/Welcome Screen:** ✅ Options for login as Coach or Client
+  - **Sign-Up & Login Screens:** ✅ Basic forms with non-functional elements
+  - **Client Dashboard:** ✅ Display upcoming sessions, session history, and booking interface
+  - **Coach Dashboard:** ✅ Display today's sessions, upcoming sessions, availability settings
+  - **Booking & Session Details Pages:** ✅ Interfaces for booking, cancellation, and session overview
+  - **News Feed Page:** A placeholder for coaches to post news and announcements
 - **Mobile-First Design:**  
-  - Ensure all screens are optimized for mobile and are responsive across devices.
+  - Ensure all screens are optimized for mobile and are responsive across devices
 
 ## 8. Common Screens & Error Handling
 - **Help/Support Pages:**  

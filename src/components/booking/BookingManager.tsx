@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { supabaseAdmin } from '@/lib/supabase/config';
 import { useAuth } from '@/contexts/AuthContext';
+import { AsyncWrapper } from '@/components/ui/AsyncWrapper';
 
 interface Coach {
   id: string;
@@ -202,43 +203,48 @@ export function BookingManager() {
         </div>
       )}
 
-      {/* Coach Selection */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Select Coach
-        </label>
-        <select
-          value={selectedCoach || ''}
-          onChange={(e) => setSelectedCoach(e.target.value)}
-          className="w-full rounded-md border border-gray-300 p-2"
-        >
-          <option value="">Choose a coach</option>
-          {coaches.map((coach) => (
-            <option key={coach.id} value={coach.id}>
-              {coach.full_name || coach.email}
-            </option>
-          ))}
-        </select>
-      </div>
+      <AsyncWrapper
+        isLoading={isLoading}
+        error={message?.type === 'error' ? message.text : null}
+        onRetry={() => {
+          setMessage(null);
+          // Retry loading coaches if needed
+        }}
+      >
+        {/* Coach Selection */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Select Coach
+          </label>
+          <select
+            value={selectedCoach || ''}
+            onChange={(e) => setSelectedCoach(e.target.value)}
+            className="w-full rounded-md border border-gray-300 p-2"
+          >
+            <option value="">Choose a coach</option>
+            {coaches.map((coach) => (
+              <option key={coach.id} value={coach.id}>
+                {coach.full_name || coach.email}
+              </option>
+            ))}
+          </select>
+        </div>
 
-      {/* Date Selection */}
-      <div className="space-y-2">
-        <label className="block text-sm font-medium text-gray-700">
-          Select Date
-        </label>
-        <input
-          type="date"
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          min={new Date().toISOString().split('T')[0]}
-          className="w-full rounded-md border border-gray-300 p-2"
-        />
-      </div>
+        {/* Date Selection */}
+        <div className="space-y-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Select Date
+          </label>
+          <input
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            min={new Date().toISOString().split('T')[0]}
+            className="w-full rounded-md border border-gray-300 p-2"
+          />
+        </div>
 
-      {/* Modified Available Time Slots section */}
-      {isLoading ? (
-        <p>Loading available slots...</p>
-      ) : (
+        {/* Modified Available Time Slots section */}
         <div className="space-y-4">
           <h3 className="font-medium">Available Time Slots</h3>
           {bookingSlots.length === 0 ? (
@@ -261,7 +267,7 @@ export function BookingManager() {
             </div>
           )}
         </div>
-      )}
+      </AsyncWrapper>
     </div>
   );
 } 
