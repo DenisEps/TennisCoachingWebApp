@@ -48,59 +48,66 @@ export default function CoachDashboard() {
   console.log('Rendering coach dashboard, showAvailability:', showAvailability);
 
   return (
-    <div className="p-8">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Coach Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {user.email}</p>
-        </div>
-        <div className="flex items-center space-x-4">
-          <Link
-            href="/support"
-            className="text-blue-600 hover:text-blue-800"
-          >
-            Help & Support
-          </Link>
-          <button
-            onClick={() => signOut()}
-            className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Availability Management Section */}
-        <div className="rounded-lg bg-white p-6 shadow-lg">
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Availability</h2>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white shadow">
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-gray-900">
+                Coach Dashboard
+              </h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Welcome back, {user?.email}
+              </p>
+            </div>
             <button
-              type="button"
-              onClick={handleManageSchedule}
-              className="rounded px-4 py-2 text-sm text-blue-600 hover:bg-blue-50"
+              onClick={() => signOut()}
+              className="rounded-md bg-red-600 px-3.5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600"
             >
-              {showAvailability ? 'Hide Schedule' : 'Manage Schedule'}
+              Sign Out
             </button>
           </div>
-          
-          <div className="mt-4">
-            {showAvailability ? (
-              <AvailabilityManager />
-            ) : (
-              <p className="text-gray-600">
-                Click 'Manage Schedule' to set your weekly availability
-              </p>
-            )}
-          </div>
         </div>
+      </header>
 
-        {/* Upcoming Sessions Section */}
-        <div className="rounded-lg bg-white p-6 shadow-lg">
-          <h2 className="mb-4 text-xl font-semibold">Sessions</h2>
-          <SessionManager role="coach" />
+      {/* Main Content */}
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Availability Section */}
+          <section className="rounded-lg bg-white p-6 shadow">
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="text-lg font-medium text-gray-900">
+                Availability
+              </h2>
+              <button
+                onClick={handleManageSchedule}
+                className="rounded-md bg-blue-50 px-3 py-2 text-sm font-medium text-blue-600 hover:bg-blue-100"
+              >
+                {showAvailability ? 'Hide Schedule' : 'Manage Schedule'}
+              </button>
+            </div>
+            
+            <div className="mt-4">
+              {showAvailability ? (
+                <AvailabilityManager />
+              ) : (
+                <p className="text-sm text-gray-500">
+                  Click 'Manage Schedule' to set your weekly availability
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* Sessions Section */}
+          <section className="rounded-lg bg-white p-6 shadow">
+            <h2 className="mb-4 text-lg font-medium text-gray-900">
+              Sessions
+            </h2>
+            <SessionManager role="coach" />
+          </section>
         </div>
-      </div>
+      </main>
     </div>
   );
 } 

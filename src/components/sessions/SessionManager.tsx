@@ -1,9 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabaseAdmin } from '@/lib/supabase/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { AsyncWrapper } from '@/components/ui/AsyncWrapper';
+import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { SessionCard } from './SessionCard';
 
 interface Session {
   id: string;
@@ -26,22 +28,18 @@ export function SessionManager({ role }: { role: 'coach' | 'client' }) {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<Session[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-  useEffect(() => {
-    loadSessions();
-  }, [user]);
-
-  const loadSessions = async () => {
+  const loadSessions = useCallback(async () => {
     if (!user) return;
 
     try {
-      console.log('Loading sessions for:', {
-        role,
-        userId: user.id
-      });
+      setIsLoading(true);
+      setError(null);
 
-      const { data, error } = await supabaseAdmin
+      const { data, error: fetchError } = await supabaseAdmin
         .from('sessions')
         .select(`
           *,
@@ -51,51 +49,76 @@ export function SessionManager({ role }: { role: 'coach' | 'client' }) {
         .eq(role === 'coach' ? 'coach_id' : 'client_id', user.id)
         .order('start_time', { ascending: true });
 
-      if (error) throw error;
+      if (fetchError) throw fetchError;
 
-      console.log('Sessions loaded:', data);
       setSessions(data || []);
-    } catch (error) {
-      console.error('Error loading sessions:', error);
-      setMessage({ type: 'error', text: 'Failed to load sessions' });
+    } catch (err) {
+      console.error('Error loading sessions:', err);
+      setError('Unable to load sessions. Please try again.');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user, role]);
+
+  useEffect(() => {
+    loadSessions();
+  }, [loadSessions]);
 
   const handleCancelSession = async (sessionId: string) => {
     try {
-      const { error } = await supabaseAdmin
+      setIsActionLoading(true);
+      setError(null);
+
+      const { error: cancelError } = await supabaseAdmin
         .from('sessions')
         .update({ status: 'cancelled' })
         .eq('id', sessionId);
 
-      if (error) throw error;
+      if (cancelError) throw cancelError;
 
+      await loadSessions(); // Reload sessions after cancellation
       setMessage({ type: 'success', text: 'Session cancelled successfully' });
-      loadSessions(); // Reload sessions to update the list
-    } catch (error) {
-      console.error('Error cancelling session:', error);
-      setMessage({ type: 'error', text: 'Failed to cancel session' });
+    } catch (err) {
+      console.error('Error cancelling session:', err);
+      setError('Failed to cancel session. Please try again.');
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const getStatusBadgeClasses = (status: Session['status']) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-50 text-yellow-700 ring-yellow-600/20';
+      case 'confirmed':
+        return 'bg-green-50 text-green-700 ring-green-600/20';
+      case 'completed':
+        return 'bg-blue-50 text-blue-700 ring-blue-600/20';
+      case 'cancelled':
+        return 'bg-gray-50 text-gray-600 ring-gray-500/10';
+      default:
+        return 'bg-gray-50 text-gray-600 ring-gray-500/10';
     }
   };
 
   const formatDateTime = (dateStr: string) => {
     const date = new Date(dateStr);
-    return date.toLocaleString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
+    return {
+      date: date.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+      }),
+      time: date.toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+      }),
+    };
   };
 
   const isUpcoming = (session: Session) => {
     return new Date(session.start_time) > new Date();
   };
-
-  if (isLoading) return <div>Loading sessions...</div>;
 
   const upcomingSessions = sessions.filter(s => isUpcoming(s) && s.status !== 'cancelled');
   const pastSessions = sessions.filter(s => !isUpcoming(s) || s.status === 'cancelled');
@@ -103,84 +126,56 @@ export function SessionManager({ role }: { role: 'coach' | 'client' }) {
   return (
     <AsyncWrapper
       isLoading={isLoading}
-      error={message?.type === 'error' ? message.text : null}
+      error={error}
       onRetry={loadSessions}
+      isEmpty={sessions.length === 0}
+      emptyMessage="No sessions found"
+      loadingMessage="Loading your sessions..."
     >
-      <div className="space-y-6">
+      <div className="space-y-8">
         {message?.type === 'success' && (
-          <div className="rounded bg-green-100 p-3 text-green-700">
-            {message.text}
+          <div className="rounded-md bg-green-50 p-4">
+            <p className="text-sm font-medium text-green-800">{message.text}</p>
           </div>
         )}
 
         {/* Upcoming Sessions */}
         <div>
-          <h3 className="font-medium text-lg mb-4">Upcoming Sessions</h3>
-          {upcomingSessions.length === 0 ? (
-            <p className="text-gray-500">No upcoming sessions</p>
-          ) : (
-            <div className="space-y-4">
-              {upcomingSessions.map((session) => (
-                <div
+          <h3 className="font-medium text-gray-900">Upcoming Sessions</h3>
+          <div className="mt-4 space-y-4">
+            {upcomingSessions.length === 0 ? (
+              <p className="text-sm text-gray-500">No upcoming sessions</p>
+            ) : (
+              upcomingSessions.map((session) => (
+                <SessionCard
                   key={session.id}
-                  className="border rounded-lg p-4 space-y-2"
-                >
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium">
-                        {role === 'coach' 
-                          ? `Client: ${session.client?.full_name || session.client?.email}`
-                          : `Coach: ${session.coach?.full_name || session.coach?.email}`
-                        }
-                      </p>
-                      <p className="text-gray-600">
-                        {formatDateTime(session.start_time)} - {new Date(session.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                      </p>
-                      <p className="text-sm text-gray-500">Status: {session.status}</p>
-                    </div>
-                    {session.status === 'pending' && (
-                      <button
-                        onClick={() => handleCancelSession(session.id)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Cancel
-                      </button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                  session={session}
+                  role={role}
+                  onCancel={handleCancelSession}
+                  isActionLoading={isActionLoading}
+                />
+              ))
+            )}
+          </div>
         </div>
 
         {/* Past Sessions */}
         <div>
-          <h3 className="font-medium text-lg mb-4">Past Sessions</h3>
-          {pastSessions.length === 0 ? (
-            <p className="text-gray-500">No past sessions</p>
-          ) : (
-            <div className="space-y-4">
-              {pastSessions.map((session) => (
-                <div
+          <h3 className="font-medium text-gray-900">Past Sessions</h3>
+          <div className="mt-4 space-y-4">
+            {pastSessions.length === 0 ? (
+              <p className="text-sm text-gray-500">No past sessions</p>
+            ) : (
+              pastSessions.map((session) => (
+                <SessionCard
                   key={session.id}
-                  className="border rounded-lg p-4 space-y-2 bg-gray-50"
-                >
-                  <div>
-                    <p className="font-medium">
-                      {role === 'coach'
-                        ? `Client: ${session.client?.full_name || session.client?.email}`
-                        : `Coach: ${session.coach?.full_name || session.coach?.email}`
-                      }
-                    </p>
-                    <p className="text-gray-600">
-                      {formatDateTime(session.start_time)} - {new Date(session.end_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}
-                    </p>
-                    <p className="text-sm text-gray-500">Status: {session.status}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                  session={session}
+                  role={role}
+                  isPast
+                />
+              ))
+            )}
+          </div>
         </div>
       </div>
     </AsyncWrapper>

@@ -11,17 +11,12 @@ export default function LoginPage() {
   const router = useRouter();
 
   const handleLogin = async (role: 'coach' | 'client') => {
-    console.log('Button clicked!');
     try {
       setIsLoading(true);
       setError(null);
-      console.log('Attempting login as:', role);
       
       await signIn(role);
-      console.log('Login successful, redirecting...');
-      
-      // Redirect directly to the correct dashboard
-      router.push(`/dashboard/${role}`);
+      router.push('/news');
     } catch (err) {
       console.error('Login error:', err);
       setError(err instanceof Error ? err.message : 'Failed to login');
@@ -43,10 +38,7 @@ export default function LoginPage() {
         
         <div className="mt-8 space-y-4">
           <button
-            onClick={() => {
-              console.log('Coach button clicked');
-              handleLogin('coach');
-            }}
+            onClick={() => handleLogin('coach')}
             disabled={isLoading}
             className="w-full rounded-lg bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:opacity-50"
           >
@@ -54,10 +46,7 @@ export default function LoginPage() {
           </button>
           
           <button
-            onClick={() => {
-              console.log('Client button clicked');
-              handleLogin('client');
-            }}
+            onClick={() => handleLogin('client')}
             disabled={isLoading}
             className="w-full rounded-lg bg-green-600 px-4 py-3 text-white hover:bg-green-700 disabled:opacity-50"
           >

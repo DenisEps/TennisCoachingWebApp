@@ -1,12 +1,15 @@
 interface ErrorMessageProps {
   message: string;
-  onRetry?: () => void;
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
 }
 
-export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
+export function ErrorMessage({ message, action }: ErrorMessageProps) {
   return (
-    <div className="rounded-lg bg-red-50 p-4">
-      <div className="flex items-center">
+    <div className="rounded-md bg-red-50 p-4">
+      <div className="flex">
         <div className="flex-shrink-0">
           {/* Error icon */}
           <svg
@@ -24,13 +27,13 @@ export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
         <div className="ml-3">
           <p className="text-sm font-medium text-red-800">{message}</p>
         </div>
-        {onRetry && (
+        {action && (
           <div className="ml-auto pl-3">
             <button
-              onClick={onRetry}
-              className="rounded bg-red-600 px-3 py-1 text-sm text-white hover:bg-red-700"
+              onClick={action.onClick}
+              className="rounded-md bg-red-50 px-2 py-1.5 text-sm font-medium text-red-800 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-offset-2"
             >
-              Retry
+              {action.label}
             </button>
           </div>
         )}
