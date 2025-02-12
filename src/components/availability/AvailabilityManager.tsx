@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { supabaseAdmin } from '@/lib/supabase/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { DayAvailability } from './DayAvailability';
@@ -31,11 +31,7 @@ export function AvailabilityManager() {
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 
-  useEffect(() => {
-    loadAvailability();
-  }, [loadAvailability]);
-
-  const loadAvailability = async () => {
+  const loadAvailability = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -57,7 +53,11 @@ export function AvailabilityManager() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadAvailability();
+  }, [loadAvailability]);
 
   const handleAddSlot = async (dayOfWeek: number, startTime: string, endTime: string) => {
     if (!user) return;

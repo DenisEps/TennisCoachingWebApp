@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 
-export default function LoginForm() {
+const LoginForm = () => {
   const router = useRouter();
 
   const handleLogin = () => {
@@ -14,4 +14,6 @@ export default function LoginForm() {
       {/* Component content */}
     </div>
   );
-} 
+};
+
+export default LoginForm; 

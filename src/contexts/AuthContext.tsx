@@ -15,48 +15,6 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Helper function to create base64url string
-const base64url = (str: string) => {
-  return btoa(str)
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=+$/, '');
-};
-
-// Create mock data based on role
-const createMockData = (role: 'coach' | 'client') => {
-  const mockUser = {
-    id: role === 'coach' 
-      ? '00000000-0000-0000-0000-000000000001'  // UUID format for coach
-      : '00000000-0000-0000-0000-000000000002', // UUID format for client
-    email: `demo${role}@example.com`,
-    role: role,
-    aud: 'authenticated',
-    created_at: new Date().toISOString(),
-  } as User;
-
-  // Create a properly formatted JWT token
-  const header = base64url(JSON.stringify({ alg: 'HS256', typ: 'JWT' }));
-  const payload = base64url(JSON.stringify({
-    sub: mockUser.id,
-    email: mockUser.email,
-    role: 'authenticated',
-    exp: Math.floor(Date.now() / 1000) + 3600
-  }));
-  const signature = base64url('mock_signature');
-
-  const mockToken = `${header}.${payload}.${signature}`;
-
-  const mockSession = {
-    user: mockUser,
-    access_token: mockToken,
-    refresh_token: `mock_refresh_${role}`,
-    expires_in: 3600,
-  } as Session;
-
-  return { mockUser, mockSession };
-};
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
