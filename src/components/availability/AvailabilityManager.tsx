@@ -142,7 +142,7 @@ export function AvailabilityManager() {
           <DayAvailability
             key={day.value}
             dayName={day.name}
-            dayOfWeek={day.value}
+            _dayOfWeek={day.value}
             slots={slots.filter(slot => slot.day_of_week === day.value)}
             onAddSlot={(startTime, endTime) => 
               handleAddSlot(day.value, startTime, endTime)
