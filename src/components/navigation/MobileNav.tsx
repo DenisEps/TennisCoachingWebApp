@@ -8,7 +8,6 @@ import {
   Home,
   UserCircle, 
   Clock,
-  Bell,
   PlusCircle,
   Newspaper
 } from 'lucide-react';

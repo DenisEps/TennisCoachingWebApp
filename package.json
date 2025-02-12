@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write .",
-    "test": "jest"
+    "test": "jest",
+    "vercel-build": "next build"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",

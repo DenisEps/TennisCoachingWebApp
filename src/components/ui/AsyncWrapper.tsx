@@ -1,11 +1,9 @@
 import { LoadingSpinner } from './LoadingSpinner';
-import { ErrorMessage } from './ErrorMessage';
 
 interface AsyncWrapperProps {
   isLoading: boolean;
   error: string | null;
   children: React.ReactNode;
-  onRetry?: () => void;
   loadingMessage?: string;
   isEmpty?: boolean;
   emptyMessage?: string;
@@ -16,7 +14,6 @@ export function AsyncWrapper({
   isLoading, 
   error, 
   children, 
-  onRetry,
   loadingMessage = 'Loading...',
   isEmpty = false,
   emptyMessage = 'No data available',

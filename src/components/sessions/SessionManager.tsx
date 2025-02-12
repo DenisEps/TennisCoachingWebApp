@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabaseAdmin } from '@/lib/supabase/config';
 import { useAuth } from '@/contexts/AuthContext';
 import { AsyncWrapper } from '@/components/ui/AsyncWrapper';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { SessionCard } from './SessionCard';
 
 interface Session {
@@ -84,36 +83,6 @@ export function SessionManager({ role }: { role: 'coach' | 'client' }) {
     } finally {
       setIsActionLoading(false);
     }
-  };
-
-  const getStatusBadgeClasses = (status: Session['status']) => {
-    switch (status) {
-      case 'pending':
-        return 'bg-yellow-50 text-yellow-700 ring-yellow-600/20';
-      case 'confirmed':
-        return 'bg-green-50 text-green-700 ring-green-600/20';
-      case 'completed':
-        return 'bg-blue-50 text-blue-700 ring-blue-600/20';
-      case 'cancelled':
-        return 'bg-gray-50 text-gray-600 ring-gray-500/10';
-      default:
-        return 'bg-gray-50 text-gray-600 ring-gray-500/10';
-    }
-  };
-
-  const formatDateTime = (dateStr: string) => {
-    const date = new Date(dateStr);
-    return {
-      date: date.toLocaleDateString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-      }),
-      time: date.toLocaleTimeString('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-      }),
-    };
   };
 
   const isUpcoming = (session: Session) => {
