@@ -191,7 +191,7 @@ describe('BookingManager', () => {
   });
 
   it('allows starting a new booking after completion', async () => {
-    const { container } = render(<BookingManager />);
+    render(<BookingManager />);
     fireEvent.click(screen.getByText('Book Another Session'));
     expect(screen.getByText('Select a Coach')).toBeInTheDocument();
   });

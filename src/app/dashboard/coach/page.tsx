@@ -92,7 +92,7 @@ export default function CoachDashboard() {
                 <AvailabilityManager />
               ) : (
                 <p className="text-sm text-gray-500">
-                  Click 'Manage Schedule' to set your weekly availability
+                  Click &apos;Manage Schedule&apos; to set your weekly availability
                 </p>
               )}
             </div>
