@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { supabaseAdmin } from '@/lib/supabase/config';
 import { useRouter } from 'next/navigation';
 import { UserCircle } from 'lucide-react';
+import { User } from '@/types/auth';
 
 export default function ProfilePage() {
   const { user, signOut, refreshUserData } = useAuth();
