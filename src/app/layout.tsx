@@ -4,8 +4,12 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { AuthProvider } from '@/components/providers/AuthProvider';
 import { MobileNav } from '@/components/navigation/MobileNav';
+import { validateEnv } from '@/lib/env';
 
 const inter = Inter({ subsets: ['latin'] });
+
+// Validate environment variables
+validateEnv();
 
 export const metadata: Metadata = {
   title: 'Tennis Coaching App',

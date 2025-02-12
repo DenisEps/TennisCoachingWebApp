@@ -9,7 +9,9 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "test": "jest",
-    "vercel-build": "next build"
+    "vercel-build": "npm run lint && next build",
+    "check-types": "tsc --noEmit",
+    "prebuild": "npm run check-types && npm run lint"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.6",

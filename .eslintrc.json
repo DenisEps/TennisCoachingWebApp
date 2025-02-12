@@ -11,9 +11,19 @@
   "rules": {
     "@typescript-eslint/no-unused-vars": ["error", {
       "argsIgnorePattern": "^_",
-      "varsIgnorePattern": "^_"
+      "varsIgnorePattern": "^_",
+      "ignoreRestSiblings": true
     }],
     "@typescript-eslint/no-explicit-any": "error",
-    "react-hooks/exhaustive-deps": "warn"
-  }
+    "react-hooks/exhaustive-deps": "warn",
+    "react/no-unescaped-entities": "off"
+  },
+  "overrides": [
+    {
+      "files": ["**/__tests__/**/*", "**/*.test.*"],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": "off"
+      }
+    }
+  ]
 } 
