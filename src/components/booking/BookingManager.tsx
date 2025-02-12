@@ -21,7 +21,7 @@ export function BookingManager() {
   const { user } = useAuth();
   const [step, setStep] = useState<'coach' | 'time' | 'confirm'>('coach');
   const [selectedCoach, setSelectedCoach] = useState<Coach | null>(null);
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | undefined>(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState<TimeSlot | undefined>(undefined);
   const [bookingComplete, setBookingComplete] = useState(false);
 
   const handleCoachSelect = (coach: Coach) => {
@@ -44,14 +44,14 @@ export function BookingManager() {
       setSelectedCoach(null);
     } else if (step === 'confirm') {
       setStep('time');
-      setSelectedTimeSlot(null);
+      setSelectedTimeSlot(undefined);
     }
   };
 
   const handleStartOver = () => {
     setStep('coach');
     setSelectedCoach(null);
-    setSelectedTimeSlot(null);
+    setSelectedTimeSlot(undefined);
     setBookingComplete(false);
   };
 
