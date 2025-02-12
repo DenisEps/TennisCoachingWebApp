@@ -33,7 +33,7 @@ export function AvailabilityManager() {
 
   useEffect(() => {
     loadAvailability();
-  }, [user]);
+  }, [loadAvailability]);
 
   const loadAvailability = async () => {
     if (!user) return;

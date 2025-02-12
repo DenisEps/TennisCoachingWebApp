@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { AvailabilityManager } from '@/components/availability/AvailabilityManager';
 import { SessionManager } from '@/components/sessions/SessionManager';
-import Link from 'next/link';
 
 export default function CoachDashboard() {
   const { user, session, signOut, isLoading } = useAuth();

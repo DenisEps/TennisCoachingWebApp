@@ -4,7 +4,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Logo } from '@/components/ui/Logo';
-import { theme } from '@/config/theme';
 
 export default function LoginPage() {
   const { signIn } = useAuth();

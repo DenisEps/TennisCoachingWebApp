@@ -194,7 +194,7 @@ describe('BookingManager', () => {
     render(<BookingManager />);
 
     // Set booking as complete
-    const { rerender } = render(<BookingManager />);
+    render(<BookingManager />);
     fireEvent.click(screen.getByText('Book Another Session'));
 
     // Should be back at coach selection

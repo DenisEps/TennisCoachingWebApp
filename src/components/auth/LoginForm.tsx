@@ -1,16 +1,17 @@
+'use client';
+
 import { useRouter } from 'next/navigation';
 
-const LoginForm: React.FC = () => {
+export default function LoginForm() {
   const router = useRouter();
 
   const handleLogin = () => {
-    // ... existing code ...
     router.push('/news');
   };
 
   return (
-    // ... rest of the component code ...
+    <div>
+      {/* Component content */}
+    </div>
   );
-};
-
-export default LoginForm; 
+} 
