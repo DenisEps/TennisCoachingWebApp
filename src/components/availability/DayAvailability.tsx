@@ -12,6 +12,7 @@ interface TimeSlot {
 
 interface DayAvailabilityProps {
   dayName: string;
+  dayOfWeek: number;
   slots: TimeSlot[];
   onAddSlot: (startTime: string, endTime: string) => Promise<void>;
   onUpdateSlot: (id: string, startTime: string, endTime: string) => Promise<void>;
@@ -20,6 +21,7 @@ interface DayAvailabilityProps {
 
 export function DayAvailability({
   dayName,
+  dayOfWeek,
   slots,
   onAddSlot,
   onUpdateSlot,
